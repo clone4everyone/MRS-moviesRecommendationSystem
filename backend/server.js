@@ -16,8 +16,20 @@ const PORT = process.env.PORT || 5000;
 
 // Security middleware
 app.use(helmet());
+const allowedOrigins = [
+  'http://localhost:5173', // dev
+  'https://mrs-movies-recommendation-system.vercel.app' // production
+];
+
 app.use(cors({
-  origin: '*'
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true
 }));
 
 // Rate limiting
